@@ -6,7 +6,7 @@
 
 Official implementation of **"DANTE.v2: A Scenario-Specific Breakdown of an LSTM-based Approach to Predict Insider Threat on Daily System Logs"**
 
-**Accepted at:** 90th Mississippi Academy of Sciences Annual Meeting (March 19-20, 2025)
+**Accepted at:** 90th Mississippi Academy of Sciences Annual Meeting (March 19-20, 2026)
 
 **Authors:** Alabhya Pahari, Aryan Adhikari  
 **Affiliation:** University of Southern Mississippi
@@ -301,4 +301,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Last Updated:** December 18, 2025  
-**Status:** ✅ Accepted for Publication
+**Status:** ✅ Accepted
