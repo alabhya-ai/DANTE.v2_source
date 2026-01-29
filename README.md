@@ -4,18 +4,18 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12+-red.svg)](https://pytorch.org/)
 
-Official implementation of **"DANTE.v2: A Scenario-Specific Breakdown of an LSTM-based Approach to Predict Insider Threat on Daily System Logs"**
+Official implementation of **"DANTE.v2: A Scenario-Specific Breakdown of an LSTM-Based Approach to Predict Insider Threat on Daily System Logs"**
 
-**Accepted at:** 90th Mississippi Academy of Sciences Annual Meeting (March 19-20, 2026)
+**Accepted at:** 41st Computers and Their Applications (CATA), 2026
 
-**Authors:** Alabhya Pahari, Aryan Adhikari  
+**Authors:** Alabhya Pahari, Aryan Adhikari, Oluseyi Olukola, Nick Rahimi  
 **Affiliation:** University of Southern Mississippi
 
 ---
 
 ## 🎯 Overview
 
-DANTE.v2 is an optimized LSTM-based deep learning system for detecting insider threats in organizational system logs. Unlike existing approaches that report only aggregate performance, we provide the **first comprehensive scenario-specific evaluation** on the CMU CERT r5.2 dataset.
+DANTE.v2 is an optimized LSTM-Based deep learning system for detecting insider threats in organizational system logs. Unlike existing approaches that report only aggregate performance, we provide the **first comprehensive scenario-specific evaluation** on the CMU CERT r5.2 dataset.
 
 ### Key Contributions
 
@@ -34,8 +34,6 @@ DANTE.v2 is an optimized LSTM-based deep learning system for detecting insider t
 | Scenario 2 | IP Theft | **0.71** | Extended disgruntlement, massive data transfer |
 | Scenario 3 | IT Sabotage | 0.375 | Admin credential theft, rapid execution |
 | Scenario 4 | Long-term Theft | **0.74** | Unauthorized workstation access, 3-month escalation |
-
-**Global Accuracy:** 97.5% (Baseline F1: 0.35 on general test set)
 
 ---
 
@@ -59,30 +57,6 @@ Sigmoid Activation → CNN Classifier → Binary Classification (Benign/Maliciou
    - 2D convolutions to capture spatial patterns in LSTM hidden states
    - Max-pooling for dimensionality reduction
    - Weighted Cross-Entropy loss (49:1 malicious-to-benign ratio)
-
-### Hyperparameters
-
-| Component | Parameter | Value |
-|-----------|-----------|-------|
-| **LSTM Encoder** |
-| | Embedding Dimension | 40 |
-| | Hidden Size | 40 |
-| | Number of Layers | 3 |
-| | Dropout Rate | 0.5 |
-| | Vocabulary Size | 251 |
-| **CNN Classifier** |
-| | Conv1 Filters | 32 (kernel: 5×5) |
-| | Conv2 Filters | 64 (kernel: 5×5) |
-| | Pooling | MaxPool 2×2 |
-| **Training** |
-| | Batch Size | 64 |
-| | Learning Rate | 1×10⁻⁴ |
-| | Optimizer | Adam |
-| | LSTM Pre-training Epochs | 2 |
-| | CNN Training Epochs | 10 |
-| | Train/Test Split | 80/20 (Stratified) |
-
----
 
 ## 🚀 Quick Start
 
@@ -108,7 +82,7 @@ pip install -r requirements.txt
 ### Dataset Preparation
 
 1. Download the [CMU CERT Insider Threat Dataset r5.2](https://kilthub.cmu.edu/articles/dataset/Insider_Threat_Test_Dataset/12841247)
-2. Extract and place in `./data/cert-r5.2/`
+2. Extract
 3. Run preprocessing:
 
 ```bash
@@ -138,9 +112,9 @@ train_cnn_classifier(EPOCHS=10,
                      LSTM_CHECKPOINT_PATH='lstm_encoder.pt')
 ```
 
-Training takes approximately:
-- **LSTM Encoder:** ~30 minutes (2 epochs, NVIDIA RTX 4060)
-- **CNN Classifier:** ~2 hours (10 epochs, NVIDIA RTX 4060)
+Training takes approximately: ~44 minutes
+- **LSTM Encoder:** 2 epochs, NVIDIA RTX 4060
+- **CNN Classifier:** 10 epochs, NVIDIA RTX 4060
 
 ### Evaluation
 
@@ -171,54 +145,6 @@ evaluate_model(X_SUBSET_PATH='X_test_scenario1.pkl',
 
 ---
 
-## 📁 Repository Structure
-
-```
-DANTE.v2_source/
-│
-├── model.py                    # Model architecture definitions
-│   ├── LSTM_Encoder           # Sequence encoder (frozen during classification)
-│   ├── CNN_Classifier         # Malicious activity classifier
-│   └── InsiderClassifier      # Combined model wrapper
-│
-├── extractXY.ipynb            # Raw log preprocessing pipeline
-├── train_test_splitter.py     # Stratified dataset splitting
-├── train.ipynb                # Training scripts (encoder + classifier)
-├── evaluate.ipynb             # Evaluation and metrics computation
-│
-├── data/                      # (User must download CERT r5.2 dataset)
-├── checkpoints/               # Saved model weights
-└── results/                   # Evaluation outputs (confusion matrices, metrics)
-```
-
----
-
-## 🔬 Reproducing Paper Results
-
-To reproduce the scenario-specific F1-scores reported in Table I:
-
-1. **Prepare Scenario-Specific Test Sets:**
-   ```python
-   # Filter test data by scenario (based on insiders.csv metadata)
-   # Save as X_test_s1.pkl, y_test_s1.pkl, etc.
-   ```
-
-2. **Evaluate Each Scenario:**
-   ```bash
-   for scenario in {1..4}; do
-       python evaluate.ipynb --test_X X_test_s${scenario}.pkl \
-                             --test_y y_test_s${scenario}.pkl \
-                             --output results_scenario${scenario}.json
-   done
-   ```
-
-3. **Aggregate Results:**
-   ```python
-   # Compile metrics from results_scenario*.json into Table I format
-   ```
-
----
-
 ## 💡 Key Design Decisions
 
 ### Why LSTM over Transformers?
@@ -244,45 +170,15 @@ This expansion captures both stealthy low-volume probes and high-intensity exfil
 
 ## 📝 Citation
 
-If you use this code or reference our work, please cite:
+If you use this code or reference our work, please cite the work appropriately.
 
-```bibtex
-@inproceedings{pahari2025dante,
-  title={DANTE.v2: A Scenario-Specific Breakdown of an LSTM-based Approach to Predict Insider Threat on Daily System Logs},
-  author={Pahari, Alabhya and Adhikari, Aryan},
-  booktitle={Proceedings of the 90th Mississippi Academy of Sciences Annual Meeting},
-  year={2025}
-}
-```
-
----
-
-## 🛠️ Troubleshooting
-
-**Issue:** `RuntimeError: CUDA out of memory`  
-**Solution:** Reduce `BATCH_SIZE` in `train.ipynb` (try 32 or 16)
-
-**Issue:** `FileNotFoundError: X_train.pkl not found`  
-**Solution:** Ensure you've run `extractXY.ipynb` and `train_test_splitter.py` first
-
-**Issue:** Low F1-scores during training  
-**Solution:** Verify class weights are set correctly in `train_cnn_classifier()` (should be [1.0, 49.0])
-
----
-
-## 📧 Contact
-
-**Alabhya Pahari** - Alabhya.Pahari@usm.edu  
-**Aryan Adhikari** - AryanAdhikari@usm.edu
-
-**Advisor:** Dr. Nick Rahimi - nick.rahimi@usm.edu  
-**Institution:** School of Computing Sciences & Computer Engineering, University of Southern Mississippi
-
----
 
 ## 🙏 Acknowledgments
 
 This work builds upon the original DANTE architecture by Ma et al. (2020). We thank the CMU CERT team for providing the benchmark insider threat dataset.
+
+**Advisor:** Dr. Nick Rahimi - nick.rahimi@usm.edu  
+**Institution:** School of Computing Sciences & Computer Engineering, University of Southern Mississippi
 
 ---
 
@@ -300,5 +196,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Last Updated:** December 18, 2025  
+**Last Updated:** Jan 28, 2026  
 **Status:** ✅ Accepted
