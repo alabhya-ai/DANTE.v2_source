@@ -83,12 +83,9 @@ pip install -r requirements.txt
 
 1. Download the [CMU CERT Insider Threat Dataset r5.2](https://kilthub.cmu.edu/articles/dataset/Insider_Threat_Test_Dataset/12841247)
 2. Extract
-3. Run preprocessing:
-
-```bash
-python extractXY.ipynb  # Converts raw logs to action sequences
-python train_test_splitter.py  # Creates stratified train/test split
-```
+3. Run additional/pre_process_data.ipynb
+4. Run additional/merge_processed.ipynb
+5. Run extractXY.ipynb, train_test_splitter.py files
 
 This will generate:
 - `X_train.pkl`, `y_train.pkl` (Training data)
@@ -145,28 +142,6 @@ evaluate_model(X_SUBSET_PATH='X_test_scenario1.pkl',
 
 ---
 
-## 💡 Key Design Decisions
-
-### Why LSTM over Transformers?
-
-While Transformers excel at capturing global dependencies, our work prioritizes:
-
-1. **Inference Speed:** LSTMs process sequences in O(n) time vs. O(n²) for Transformers
-2. **Resource Efficiency:** Critical for real-time deployment on edge devices
-3. **Sufficient Performance:** LSTM hidden states effectively capture the temporal patterns in system logs
-
-### Weighted Loss Function
-
-Standard cross-entropy fails on imbalanced datasets (<1% malicious). We assign a 49:1 weight ratio, forcing the model to prioritize detecting rare insider threats over benign activity.
-
-### Extended Sequence Windows
-
-Original DANTE: 50-200 actions/day  
-DANTE.v2: **10-250 actions/day**
-
-This expansion captures both stealthy low-volume probes and high-intensity exfiltration events, particularly critical for Scenarios 2 and 4 (extended attacks).
-
----
 
 ## 📝 Citation
 
@@ -177,7 +152,7 @@ If you use this code or reference our work, please cite the work appropriately.
 
 This work builds upon the original DANTE architecture by Ma et al. (2020). We thank the CMU CERT team for providing the benchmark insider threat dataset.
 
-**Advisor:** Dr. Nick Rahimi - nick.rahimi@usm.edu  
+**Advisor:** Dr. Nick Rahimi - Nick.Rahimi@usm.edu  
 **Institution:** School of Computing Sciences & Computer Engineering, University of Southern Mississippi
 
 ---
@@ -196,5 +171,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Last Updated:** Jan 28, 2026  
-**Status:** ✅ Accepted
+**Last Updated:** Feb 12, 2026 
